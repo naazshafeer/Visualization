@@ -33,7 +33,7 @@ def coulomb_log(dist_, o_, G_, m_):
     '''
     x = (dist_ * o_**(2)) / (G_ * m_)
     return math.log10(x.to_value(u.dimensionless_unscaled))
-def DF_force(ln_A_, m_, m_gal_, r_choice_, rcom_, vfirst_, vsecond_, G_):
+def DF_accel(r, v, m_sat, m_gal_, rho):
     '''
     Now we will only be looking at the force and then apply the acceleration later.
     Also added first and second to make sure that the negative signs are applied correctly
@@ -97,4 +97,3 @@ def twobodyeqn(w, t, G_, m1_, m2_, m_gal_, rcom_, r_, b_=1):
 
     
     return derivs
-
