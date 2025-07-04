@@ -223,3 +223,231 @@ print(f"Energy loss: {energy_loss*100:.2f}%")
 hardening_radius = 10 * u.pc  # When stellar hardening becomes dominant
 hardening_time = (final_sep**4) / (hardening_radius.value**3 * 1e7)  # Simplified estimate
 print(f"Estimated time to hardening: {hardening_time:.2e} Myr")
+
+
+
+#past functions for reference
+# # def velocity_dispersion(m_gal_):
+# #     """Calculate velocity dispersion"""
+# #     return ((10**2.2969) * (m_gal_/(1e11 * u.Msun))**0.299 * (u.km/u.s)).to(u.pc/u.yr)
+
+# # # def coulomb_logarithm(r_com_, o_, G, m_):
+# # #     """Calculate Coulomb logarithm """
+# # #     x = (r_com_ * o_**2 / (G * m_)).decompose()
+# # #     return math.log10(x.value)
+
+# # def coulomb_logarithm(r_com_pc, o_pcyr, G_val, m_val):
+# #     """Calculate Coulomb logarithm, inputs must be floats!"""
+# #     x = (r_com_pc * o_pcyr**2) / (G_val * m_val)
+# #     return math.log10(x)
+
+# # # def dynamical_friction_a(r_com_, v_rel_, ln_A_, G, m_):
+# # #     """Calculate dynamical friction acceleration for a single body"""
+# # #     v_mag = np.linalg.norm(v_rel_)
+# # #     unit_v = v_rel_ / v_mag
+# # #     a_df_mag = 0.428 * ln_A_ * (G * m_ / r_com_**2)
+# # #     return (-a_df_mag * unit_v).to(u.pc/u.yr**2)
+
+# # def dynamical_friction_a(r_com_pc, v_rel_pcyr, ln_A, G_val, m_val):
+# #     v_mag = np.linalg.norm(v_rel_pcyr)
+# #     unit_v = v_rel_pcyr / v_mag
+# #     a_df_mag = 0.428 * ln_A * (G_val * m_val / r_com_pc**2)
+# #     return -a_df_mag * unit_v
+
+
+# # # def calculate_DF(G, m1_, m2_, m_gal_, r1_, r2_, v1_, v2_):
+# # #     """Calculate dynamical friction for both bodies"""
+# # #     r_com = (m1_*r1_ + m2_*r2_)/(m1_ + m2_)
+# # #     v_com = (m1_*v1_ + m2_*v2_)/(m1_ + m2_)
+# # #     o = velocity_dispersion(m_gal_).to(u.pc/u.yr)
+
+
+# # #     r1_com = np.linalg.norm(r1_ - r_com)
+# # #     r2_com = np.linalg.norm(r2_ - r_com)
+# # #     v1_rel = v1_ - v_com
+# # #     v2_rel = v2_ - v_com
+
+
+# # #     ln_A1 = coulomb_logarithm(r1_com, o, G, m1_)
+# # #     ln_A2 = coulomb_logarithm(r2_com, o, G, m2_)
+
+
+# # #     a_df1 = dynamical_friction_a(r1_com, v1_rel, ln_A1, G, m1_)
+# # #     a_df2 = dynamical_friction_a(r2_com, v2_rel, ln_A2, G, m2_)
+
+# # #     return a_df1, a_df2
+
+
+# # def calculate_DF(G, m1_, m2_, m_gal_, r1_, r2_, v1_, v2_):
+# #     """Calculate dynamical friction for both bodies"""
+# #     r_com = (m1_*r1_ + m2_*r2_)/(m1_ + m2_)
+# #     v_com = (m1_*v1_ + m2_*v2_)/(m1_ + m2_)
+# #     o = velocity_dispersion(m_gal_).to(u.pc/u.yr)
+
+
+# #     r1_com = np.linalg.norm(r1 - r_com)
+# #     r2_com = np.linalg.norm(r2 - r_com)
+# #     v1_rel = v1 - v_com
+# #     v2_rel = v2 - v_com
+
+
+# #     ln_A1 = coulomb_logarithm(r1_com, o, G_val, m1_val)
+# #     ln_A2 = coulomb_logarithm(r2_com, o, G_val, m2_val)
+
+
+# #     a_df1 = dynamical_friction_a(r1_com, v1_rel, ln_A1, G, m1_)
+# #     a_df2 = dynamical_friction_a(r2_com, v2_rel, ln_A2, G, m2_)
+
+# #     return a_df1, a_df2
+
+
+
+
+
+# def velocity_dispersion(m_gal_kg):
+#     """Calculate velocity dispersion in pc/yr — takes m_gal_kg in kg"""
+#     m_gal_ratio = m_gal_kg / (1e11 * const.M_sun.to(u.kg).value)
+#     v_kms = (10**2.2969) * (m_gal_ratio)**0.299  # km/s
+#     v_pcyr = (v_kms * (u.km/u.s)).to(u.pc/u.yr).value
+#     return v_pcyr
+
+
+# def coulomb_logarithm(r_com_pc, o_pcyr, G_val, m_val):
+#     """Calculate Coulomb logarithm, everything in floats"""
+#     x = (r_com_pc * o_pcyr**2) / (G_val * m_val)
+#     return math.log10(x)
+
+
+# # def dynamical_friction_a(r_com_pc, v_rel_pcyr, ln_A, G_val, m_val):
+# #     """Return dynamical friction acceleration, pc/yr^2"""
+# #     v_mag = np.linalg.norm(v_rel_pcyr)
+# #     unit_v = v_rel_pcyr / v_mag
+# #     a_df_mag = 0.428 * ln_A * (G_val * m_val / r_com_pc**2)
+# #     return a_df_mag *  (-1 * unit_v)
+
+
+# # def calculate_DF(G_val, m1_val, m2_val, m_gal_val, r1_pc, r2_pc, v1_pcyr, v2_pcyr):
+# #     """Calculate dynamical friction for both bodies"""
+
+# #     r_com = (m1_val*r1_pc + m2_val*r2_pc) / (m1_val + m2_val)
+# #     v_com = (m1_val*v1_pcyr + m2_val*v2_pcyr) / (m1_val + m2_val)
+    
+
+# #     o_pcyr = velocity_dispersion(m_gal_val)
+    
+# #     r1_com_pc = np.linalg.norm(r1_pc - r_com)
+# #     r2_com_pc = np.linalg.norm(r2_pc - r_com)
+    
+
+# #     v1_rel_pcyr = v1_pcyr - v_com
+# #     v2_rel_pcyr = v2_pcyr - v_com
+    
+
+# #     ln_A1 = coulomb_logarithm(r1_com_pc, o_pcyr, G_val, m1_val)
+# #     ln_A2 = coulomb_logarithm(r2_com_pc, o_pcyr, G_val, m2_val)
+    
+
+# #     # print(f"r1_com: {r1_com_pc:.1f} pc, v1_rel: {np.linalg.norm(v1_rel_pcyr):.2e}")
+# #     # print(f"ln_A1: {ln_A1:.2f} , DF magnitude: {0.428*ln_A1*(G_val*m1_val/r1_com_pc**2):.2e}")
+    
+
+# #     a_df1 = dynamical_friction_a(r1_com_pc, v1_rel_pcyr, ln_A1, G_val, m1_val)
+# #     a_df2 = dynamical_friction_a(r2_com_pc, v2_rel_pcyr, ln_A2, G_val, m2_val)
+    
+# #     return a_df1, a_df2
+
+
+# # def dynamical_friction_a(r_gal_pc, v_gal_pcyr, ln_A, G_val, m_val):
+# #     """DF acceleration relative to GALACTIC CENTER"""
+# #     v_mag = np.linalg.norm(v_gal_pcyr)
+# #     if v_mag == 0:
+# #         return np.zeros(3)
+# #     unit_v = v_gal_pcyr / v_mag
+# #     a_df_mag = 0.428 * ln_A * (G_val * m_val / r_gal_pc**2)
+# #     return -a_df_mag * unit_v  # Opposite to galactic motion
+
+# # def calculate_DF(G_val, m1_val, m2_val, m_gal_val, r1_pc, r2_pc, v1_pcyr, v2_pcyr):
+# #     """Calculate DF relative to GALACTIC CENTER (0,0,0)"""
+# #     # Remove COM calculations - use galactic center directly
+# #     o_pcyr = velocity_dispersion(m_gal_val)
+    
+# #     # Distance from GALACTIC CENTER
+# #     r1_gal = np.linalg.norm(r1_pc)
+# #     r2_gal = np.linalg.norm(r2_pc)
+    
+# #     # Velocities are already relative to galaxy (since galaxy is fixed)
+# #     ln_A1 = coulomb_logarithm(r1_gal, o_pcyr, G_val, m1_val)
+# #     ln_A2 = coulomb_logarithm(r2_gal, o_pcyr, G_val, m2_val)
+
+# #     a_df1 = dynamical_friction_a(r1_gal, v1_pcyr, ln_A1, G_val, m1_val)
+# #     a_df2 = dynamical_friction_a(r2_gal, v2_pcyr, ln_A2, G_val, m2_val)
+    
+# #     return a_df1, a_df2
+
+
+# def dynamical_friction_a(r_gal_pc, v_gal_pcyr, ln_A, G_val, m_val):
+#     """DF acceleration relative to GALACTIC CENTER"""
+#     v_mag = np.linalg.norm(v_gal_pcyr)
+#     if v_mag == 0:
+#         return np.zeros(3)
+#     unit_v = v_gal_pcyr / v_mag
+#     a_df_mag = 0.428 * ln_A * (G_val * m_val / r_gal_pc**2)
+#     return -a_df_mag * unit_v  # Opposite to galactic motion
+
+# def calculate_DF(G_val, m1_val, m2_val, m_gal_val, r1_pc, r2_pc, v1_pcyr, v2_pcyr):
+#     """Calculate DF relative to GALACTIC CENTER (0,0,0)"""
+#     # Use distance from galactic center (origin)
+#     r1_gal = np.linalg.norm(r1_pc)
+#     r2_gal = np.linalg.norm(r2_pc)
+    
+#     # Velocities are already relative to galaxy (galaxy frame)
+#     o_pcyr = velocity_dispersion(m_gal_val)
+    
+#     ln_A1 = coulomb_logarithm(r1_gal, o_pcyr, G_val, m1_val)
+#     ln_A2 = coulomb_logarithm(r2_gal, o_pcyr, G_val, m2_val)
+
+#     a_df1 = dynamical_friction_a(r1_gal, v1_pcyr, ln_A1, G_val, m1_val)
+#     a_df2 = dynamical_friction_a(r2_gal, v2_pcyr, ln_A2, G_val, m2_val)
+    
+#     return a_df1, a_df2
+
+
+# def velocity_dispersion(m_gal_kg):
+#     """Velocity dispersion in pc/yr for given galaxy mass in kg"""
+#     m_ratio = m_gal_kg / (1e11 * const.M_sun.to(u.kg).value)
+#     v_kms = (10**2.2969) * (m_ratio)**0.299
+#     return v_kms * km_s_to_pc_yr  # Convert to pc/yr
+
+# def coulomb_logarithm(r_gal_pc, sigma_pc_yr, G_val, m_val):
+#     """Coulomb logarithm calculation"""
+#     x = (r_gal_pc * sigma_pc_yr**2) / (G_val * m_val)
+#     return math.log10(x) if x > 0 else 3.0  # Minimum reasonable value
+
+# def dynamical_friction_acceleration(r_gal_pc, v_gal_pcyr, ln_Lambda, G_val, m_val):
+#     """DF acceleration in pc/yr²"""
+#     v_mag = np.linalg.norm(v_gal_pcyr)
+#     if v_mag == 0:
+#         return np.zeros(3)
+    
+#     unit_v = v_gal_pcyr / v_mag
+#     a_df_mag = 0.428 * ln_Lambda * (G_val * m_val) / r_gal_pc**2
+#     return -a_df_mag * unit_v  # Opposite to motion
+
+# def calculate_DF(G_val, m_gal_val, r1_pc, r2_pc, v1_pcyr, v2_pcyr):
+#     """Calculate DF accelerations relative to galactic center"""
+#     # Velocity dispersion
+#     sigma_pc_yr = velocity_dispersion(m_gal_val)
+    
+#     # Distance to galactic center (origin)
+#     r1_gal = np.linalg.norm(r1_pc)
+#     r2_gal = np.linalg.norm(r2_pc)
+    
+#     # Coulomb logarithm
+#     ln_Lambda1 = coulomb_logarithm(r1_gal, sigma_pc_yr, G_val, m1_val)
+#     ln_Lambda2 = coulomb_logarithm(r2_gal, sigma_pc_yr, G_val, m2_val)
+    
+#     # DF accelerations
+#     a_df1 = dynamical_friction_acceleration(r1_gal, v1_pcyr, ln_Lambda1, G_val, m1_val)
+#     a_df2 = dynamical_friction_acceleration(r2_gal, v2_pcyr, ln_Lambda2, G_val, m2_val)
+    
+#     return a_df1, a_df2
