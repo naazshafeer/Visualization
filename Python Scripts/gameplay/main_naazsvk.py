@@ -4,45 +4,77 @@
 
 import gameplay
 import helper
-import display
+import functions
+import os
 
 def main():
     ''' Parameter : none
     Returns : the entire game!'''
+    print("\n")
+    print("\n")
+    print("         Welcome to the Dynamical Friction Simulator         ")
+    print(" -> This simulator aims to visualize a supermassive black hole binary system and how it comes to merge.")
+    print(" -> When two galaxies, that contain supermassive black holes (SMBH) within them, merge so do the SMBHs.")
+    print(" -> The dominant component that brings them together is called dynamical friction!")
+    print(" -> This is a physical phenomena that occurs to a massive object (such as the SMBH) as it travels through space, it incrementally slows down due to the gravitational interactions from nearby stars.")
+    print(" -> This simulation will be able to visualize your choice of SMBH pairs and how it comes closer together. You are able to request various different types of plots as well, a few examples are:")
+    print("  ~ Orbital Path over Time ~")
+    print("  ~ Velocity over Time, with DF and no DF ~")
+    print("  ~ Dynamical Friction Acceleration over Time ~")
+    print(" -> and many more!")
 
-    print("Welcome to the Gaming Hub!")
 
-    player_data = helper.read_player_data()
+
     options_dict = helper.create_options_dict()
-
     quit_program = False
+
+
+    print("\n")
+    print("\n")
+    print("Intructions to use the simulator:")
+    print("\n")
+    print("• Remember to ALWAYS start with 'A'. This allows for the system to recognize the initial conditions, without this the program will crash.")
+    print("• And ALWAYS finish with 'Q' as it will close the program, allowing for you to test out another initial condition. I am still working on how to ensure a clean methodology to try many different IC's in one run, but this makes it easier on your end to not confuse ICs")
+    print("\n")
+    print("\n")
+    
     while not quit_program:
-        display.display_user_menu(options_dict)
+        functions.display_user_menu(options_dict)
         choice = helper.get_user_option(options_dict)
         print(choice)
 
         if choice == 'A':
-            display.display_player_by_ID(player_data)
+            functions.choosing_IC()
         elif choice == 'B':
-            display.display_smallest_values(player_data)
+            if None in functions.initial_conditions.values():
+                print("Please set initial conditions first (Option A)")
+                continue
+                
+            print(f"\nRunning simulation with:")
+            print(f"Mass: {functions.initial_conditions['mass']} * const.M_sun")
+            print(f"Separation: {functions.initial_conditions['sep']} pc")
+            print(f"Angle: {functions.initial_conditions['angle']} degrees")
+            print(f"Velocity: {functions.initial_conditions['velocity']:.2f}")
+            
+            try:
+                data_nodf, data_df = functions.simulation(
+                    mass_=functions.initial_conditions['mass'],
+                    sep_=functions.initial_conditions['sep'],
+                    velocity_=functions.initial_conditions['velocity'],
+                    angle_=functions.initial_conditions['angle']
+                )
+                
+                gameplay.plot_orbits(data_nodf, data_df)
+                
+            except Exception as e:
+                print(f"\nSimulation error: {str(e)}")
         elif choice == 'C':
-            display.display_largest_value(player_data)
+            print("not ready yet")
         elif choice == 'D':
-            display.display_top_scores(player_data)
-        elif choice == 'E':
-            display.find_players(player_data)
-        elif choice == 'P':
-            user_input1 = int(input("Choose index of player 1: ").strip())
-            while user_input1 not in player_data.index:
-                user_input1 = int(input("Choose index of player 1: ").strip())
-            user_input2 = int(input("Choose index of player 2: ").strip())
-            while user_input2 not in player_data.index:
-                user_input2 = int(input("Choose index of player 2: ").strip())
-
-            gameplay.play_game(player_data, player1_id = user_input1, player2_id = user_input2)
+            functions.display_IC()
         elif choice == 'Q':
             quit_program = True
-            print("Goodbye!")
+            print("Thank you for using this simulator. If you would like to try again, please rerun this python script")
 
 if __name__ == "__main__":
     main()

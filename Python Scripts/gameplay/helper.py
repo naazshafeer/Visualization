@@ -7,13 +7,13 @@
 import pandas as pd
 
 
-def read_player_data(csv_file = 'players.csv'):
-    '''Parameter : csv file
-    Returns: reads the file
-    '''
-    # player_info = pd.read_csv(csv_file)
-    # return player_info
-    return pd.read_csv(csv_file) #made this change after rereading the directions
+# def read_player_data(csv_file = 'players.csv'):
+#     '''Parameter : csv file
+#     Returns: reads the file
+#     '''
+#     # player_info = pd.read_csv(csv_file)
+#     # return player_info
+#     return pd.read_csv(csv_file) #made this change after rereading the directions
 
 def create_options_dict(textFileStr = "menu_options.txt"):
     '''Parameter : dictionary

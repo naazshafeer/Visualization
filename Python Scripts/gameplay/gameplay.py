@@ -8,125 +8,129 @@
 
 import random as rand
 import helper
+import functions
+
+import os
+import pickle
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
 
 
-def read_data(filename = "pokemons.csv"): #first function as defined in class
-    '''Parameter : filenmae
-    Returns: this reutrns the pokemon list after it has been read
-    '''
-    pokemon_list = []
-    fileIn = open(filename, "r")
-    header = fileIn.readline()
-    for line in fileIn:
-        line = line.strip() #remove the whitespace
-        line_list = line.split(",") #remove the commas
-        pokemon_list.append(line_list)
-    fileIn.close()
-    return pokemon_list
-    #return pokemon_list is a list of lists. (from class)
-def pokemon_location(pokemon_data):
-    '''Parameter : pokemon_data
-    Returns: This asks you what location and then sorts the list
-    '''
-    empty_list = []
-    locations = ["cave", "water", "forest"]
-    prompt = "Please choose a location: " + ", or ".join(locations) + ". " #the join function
-    user_input = input(prompt).strip().lower()
-    while user_input not in locations:
-        user_input = input(prompt).strip().lower()
-    for pokemon in pokemon_data:
-        if pokemon[3] == user_input: #if pokemon locations matches the user_input locations
-            empty_list.append(pokemon)
-    return empty_list, user_input #returns the empty_list and user_input
-    #returns two things
-def write_data(collected, location):
-    '''Parameter : collected, location
-    Returns: This outputs the collected pokemon into one file
-    '''
-    filename = location + ".txt"
-    fileOut = open(filename, "w")
-    for pokemon in collected:
-        prompt = "Collected pokemon "+ pokemon[1] + " with type " + pokemon[2] + "." #changed from commas to plus and then added a period at the end to complate the sentences
-        print(prompt, file = fileOut)
-    fileOut.close()
-    #no return 
-def assign_pokemon_val(pokemon_list):
-    '''Parameter : list
-    Returns: This assigns a random value to the pokemon list
-    '''
-    for pokemon in pokemon_list:
-        pokemon.append(rand.randint(10,100))
-    return pokemon_list
-
-last_pokemon = ""
-last_type = ""
-
-def catch_list_create(pokemon_count):
-    '''Parameter : pokemon_count
-    Returns: This makes a catch_list and then assigns a 50% chance of catching the pokemon
-    '''
-    index_all = list(range(pokemon_count))
-    catch_count = pokemon_count // 2 #making a 50% chance that someone will catch the pokemon
-    return rand.sample(index_all, catch_count)
-
-def player_catch(pokemon_list, catch_list, player_id, player_data, last_pokemon="", last_type=""):
-    '''Parameter : collected all the lists to play the catch and to see if the player catches it
-    Returns: this assings a list of points to the player and then outputs that, it also stores the last pokemon so that points can be deducted or increased
-    '''
-    rounds = 0 #had some problem here I checked to see if it could loop
-    while rounds < 4:
-        print(str(player_data['name'].iloc[player_id]) + "'s turn: ")
-
-        points = 0 #starting from nothing
-        choice = -1 #initalizing variable
-        # user_choice = input("Choose a number (0-" + str(len(pokemon_list)-1) + "): ").strip()
-        while choice < 0 or choice >= len(pokemon_list):
-            user_choice = input("Choose a number (0-" + str(len(pokemon_list)-1) + "): ").strip()
-            if user_choice.isdigit():
-                choice = int(user_choice)
+def find_latest_simulation_files(folder_path="simulation_data"):
+    """Find the most recent simulation files in the specified folder"""
+    try:
+        # Get all pickle files in the directory
+        files = [f for f in os.listdir(folder_path) if f.endswith('.pkl')]
         
-        if choice in catch_list:
-            caught_pokemon = pokemon_list[choice]
-            points = caught_pokemon[4]
-            if last_pokemon == caught_pokemon[1]:
-                points = points // 2
-                print("You have caught the same pokemon... so your points are halved!")
-            elif last_type == caught_pokemon[2]:
-                points *= 2
-                print("Yo! You caught the same type, so points are doubled!")
-            print("You caught " + caught_pokemon[1] + "! And you got " + str(caught_pokemon[4]) + " points." )
-            rounds += 1
+        if not files:
+            raise FileNotFoundError("No simulation files found in the directory")
+        
+        # Extract timestamps from filenames (assuming format with timestamps)
+        file_info = []
+        for f in files:
+            try:
+                # Extract timestamp from filename (adjust pattern as needed)
+                if 'no_df' in f.lower():
+                    prefix = 'no_df'
+                elif 'with_df' in f.lower():
+                    prefix = 'with_df'
+                else:
+                    continue
+                    
+                # Find timestamp in filename (assuming format YYYYMMDD_HHMMSS)
+                parts = f.split('_')
+                for part in parts:
+                    if len(part) == 15 and part[:8].isdigit() and part[9:].isdigit():
+                        timestamp = datetime.strptime(part, "%Y%m%d_%H%M%S")
+                        file_info.append((f, timestamp, prefix))
+                        break
+            except:
+                continue
+        
+        if not file_info:
+            raise ValueError("No valid simulation files found with timestamp patterns")
+        
+        # Find most recent pair
+        latest_time = max(t for (f, t, p) in file_info)
+        latest_files = {
+            'no_df': next(f for f, t, p in file_info if t == latest_time and p == 'no_df'),
+            'with_df': next(f for f, t, p in file_info if t == latest_time and p == 'with_df')
+        }
+        
+        return {
+            'no_df': os.path.join(folder_path, latest_files['no_df']),
+            'with_df': os.path.join(folder_path, latest_files['with_df'])
+        }
+        
+    except Exception as e:
+        print(f"Error finding simulation files: {str(e)}")
+        raise
 
-            return points, caught_pokemon[1], caught_pokemon[2]
-        else:
-            print("You have caught no pokemon in this turn... try harder")
-            rounds += 1
-            return 0, "", ""  
+def load_simulation_data(file_path):
+    """Load simulation data from pickle file"""
+    try:
+        with open(file_path, 'rb') as f:
+            return pickle.load(f)
+    except Exception as e:
+        print(f"Error loading {file_path}: {str(e)}")
+        raise
 
-def play_game(player_data, player1_id, player2_id): #had to modify this for main_nsvk.py had to reorderplayer_id and playerdata to make sure that the name was outputted for the id chosen from the csv
-    '''Parameter : data, id
-    Returns: This runs everything and allows you to play the game
-    '''
-    player1 = player_data[player_data['id'] == player1_id].iloc[0]
-    player2 = player_data[player_data['id'] == player2_id].iloc[0]
+def plot_orbits(data_nodf, data_df):
+    """Plot the orbital paths from simulation data"""
+    plt.figure(figsize=(12, 12))
+    
 
-    pokemon_data = read_data()
-    pokemon_data = assign_pokemon_val(pokemon_data)
+    r1_nodf = data_nodf['r1']
+    r2_nodf = data_nodf['r2']
+    r1_df = data_df['r1']
+    r2_df = data_df['r2']
+    
 
-    location_pokemon, location = pokemon_location(pokemon_data)
-    catch_list = catch_list_create(len(location_pokemon))
-
-    last_p1_pokemon, last_p1_type = "","" #track and then remove so that we can append the points 
-    last_p2_pokemon, last_p2_type = "","" 
-
-    player1_points,last_p1_pokemon, last_p1_type = player_catch(location_pokemon, catch_list, player1_id, player_data, last_p1_pokemon, last_p1_type )
-    player2_points, last_p2_pokemon, last_p2_type = player_catch(location_pokemon, catch_list, player2_id, player_data, last_p2_pokemon, last_p2_type)
-
-    if player1_points > player2_points:
-        player_data.loc[player_data['id'] == player1_id, 'game1_score'] += 10
-        print(player1['name'] + " wins 10 points!")
-        return "win"
-    else:
-        player_data.loc[player_data['id'] == player2_id, 'game1_score'] += 10
-        print(player2['name'] + " wins 10 points!")
-        return "lose" 
+    plt.plot(r1_nodf[:, 0], r1_nodf[:, 1], 'b-', label='BH1 - No DF', linewidth=1.5)
+    plt.plot(r2_nodf[:, 0], r2_nodf[:, 1], 'r-', label='BH2 - No DF', linewidth=1.5)
+    plt.plot(r1_df[:, 0], r1_df[:, 1], 'c--', label='BH1 - With DF', linewidth=1.5)
+    plt.plot(r2_df[:, 0], r2_df[:, 1], 'm--', label='BH2 - With DF', linewidth=1.5)
+    
+    # Start
+    plt.scatter(r1_nodf[0, 0], r1_nodf[0, 1], c='blue', marker='o', s=100, edgecolor='black', zorder=5)
+    plt.scatter(r2_nodf[0, 0], r2_nodf[0, 1], c='red', marker='o', s=100, edgecolor='black', zorder=5)
+    
+    # End
+    plt.scatter(r1_nodf[-1, 0], r1_nodf[-1, 1], c='blue', marker='*', s=200, edgecolor='black', zorder=5)
+    plt.scatter(r2_nodf[-1, 0], r2_nodf[-1, 1], c='red', marker='*', s=200, edgecolor='black', zorder=5)
+    plt.scatter(r1_df[-1, 0], r1_df[-1, 1], c='cyan', marker='*', s=200, edgecolor='black', zorder=5)
+    plt.scatter(r2_df[-1, 0], r2_df[-1, 1], c='magenta', marker='*', s=200, edgecolor='black', zorder=5)
+    
+    plt.xlabel('X [pc]', fontsize=12)
+    plt.xlim(-1000, 1000)
+    plt.ylim(-1000, 1000)
+    plt.ylabel('Y [pc]', fontsize=12)
+    plt.title('Black Hole Binary Orbits\nWith and Without Dynamical Friction', fontsize=14)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend(fontsize=10, loc='upper right')
+    plt.gca().set_aspect('equal', adjustable='box')
+    
+    text_str = (
+        f"Simulation Time: {data_nodf['t'][-1]:.1f} yr\n"
+        f"Final Separation (No DF): {np.linalg.norm(data_nodf['r1'][-1]-data_nodf['r2'][-1]):.1f} pc\n"
+        f"Final Separation (With DF): {np.linalg.norm(data_df['r1'][-1]-data_df['r2'][-1]):.1f} pc"
+    )
+    plt.text(0.02, 0.98, text_str, transform=plt.gca().transAxes,
+             verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+    
+    ic = data_df['initial_conditions']
+    
+    ic_text = (
+        f"Initial Conditions:\n"
+        f"Mass: {ic['mass']}\n"
+        f"Separation: {ic['sep']} pc\n"
+        f"Angle: {ic['angle']}°\n"
+        f"Velocity: {ic['velocity']} km/s"
+    )
+    
+    plt.text(0.02, 0.02, ic_text, transform=plt.gca().transAxes,
+             bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+    
+    plt.tight_layout()
+    plt.show()

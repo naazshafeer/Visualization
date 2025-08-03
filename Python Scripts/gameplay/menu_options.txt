@@ -1,0 +1,6 @@
+A: Set your initial conditions (mass, initial separation, velocity, angle)
+B: Simulate the orbital paths of both bodies
+C: Choose the plots you would like to see (e.g - velocity vs. time)
+D: Display the initial values
+Q: Quit the simulation
+
