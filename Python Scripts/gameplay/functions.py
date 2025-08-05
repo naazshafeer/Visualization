@@ -38,6 +38,15 @@ def display_user_menu(optionsDict):
     for key in optionsDict:
         print(key + "-> " + optionsDict[key]) #optionsDict[key] should be the values (which is the short descritption)
 
+
+def display_user_menuforoptionC(optionsDict):
+    # print("Welcome to the Gaming Hub!")
+    '''Parameter : optionsDict
+    Returns: a menu option that has for example A -> Display Player Information by ID
+    '''
+    for key in optionsDict:
+        print(key + "-> " + optionsDict[key]) #optionsDict[key] should be the values (which is the short descritption)
+
 def choosing_IC():
     global initial_conditions
     print("You have chosen to set initial conditions for your SMBH pair. In Cartesian coordinates. The SMBHs will be placed on the x-axis with an initial separation with the intial velocity being in the y-axis (tangential to the orbital path), unless you choose to determine an angle for the initial starting point.")

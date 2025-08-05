@@ -26,6 +26,7 @@ def main():
 
 
     options_dict = helper.create_options_dict()
+
     quit_program = False
 
 
@@ -69,7 +70,28 @@ def main():
             except Exception as e:
                 print(f"\nSimulation error: {str(e)}")
         elif choice == 'C':
-            print("not ready yet")
+            options_dictC = helper.create_options_dictforC()
+            back_to_main_menu = False
+            while not back_to_main_menu:
+                functions.display_user_menuforoptionC(options_dictC)
+                choiceforC = helper.get_user_optionforC(options_dictC)
+                print(choiceforC)
+
+                if choiceforC == '1':
+                    gameplay.plot_velocity(data_df, data_df)
+                elif choiceforC == '2':
+                    gameplay.plot_gravitational_acceleration_vs_time(data_df)
+                elif choiceforC == '3':
+                    gameplay.plot_position_vs_time(data_df)
+                elif choiceforC == '4':
+                    gameplay.plot_df_acceleration_vs_time(data_df)
+                elif choiceforC == '5':
+                    gameplay.plot_separation_vs_time_bh1(data_df)
+                elif choiceforC == '6':
+                    gameplay.plot_separation_vs_time_bh2(data_df)
+                elif choiceforC == '7':
+                    back_to_main_menu = True
+                    print("Going back to main menu")
         elif choice == 'D':
             functions.display_IC()
         elif choice == 'Q':

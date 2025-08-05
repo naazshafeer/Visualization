@@ -134,3 +134,211 @@ def plot_orbits(data_nodf, data_df):
     
     plt.tight_layout()
     plt.show()
+
+
+def plot_velocity(data_nodf, data_df):
+    """Plot the velocity magnitude vs. time from simulation data"""
+    plt.figure(figsize=(12, 12))
+    
+    v1_nodf = data_nodf['v1']
+    v2_nodf = data_nodf['v2']
+    v1_df = data_df['v1']
+    v2_df = data_df['v2']
+    t = data_nodf['t']  # Time array (same for both df and nodf)
+    
+    # might change this if vel magnitude looks weird
+    v1_nodf_mag = np.linalg.norm(v1_nodf, axis=1)
+    v2_nodf_mag = np.linalg.norm(v2_nodf, axis=1)
+    v1_df_mag = np.linalg.norm(v1_df, axis=1)
+    v2_df_mag = np.linalg.norm(v2_df, axis=1)
+    
+    plt.plot(t, v1_nodf_mag, 'b-', label='BH1 - No DF', linewidth=1.5)
+    plt.plot(t, v2_nodf_mag, 'r-', label='BH2 - No DF', linewidth=1.5)
+    plt.plot(t, v1_df_mag, 'c--', label='BH1 - With DF', linewidth=1.5)
+    plt.plot(t, v2_df_mag, 'm--', label='BH2 - With DF', linewidth=1.5)
+    
+
+    plt.scatter(t[0], v1_nodf_mag[0], c='blue', marker='o', s=100, edgecolor='black', zorder=5)
+    plt.scatter(t[0], v2_nodf_mag[0], c='red', marker='o', s=100, edgecolor='black', zorder=5)
+    
+
+    plt.scatter(t[-1], v1_nodf_mag[-1], c='blue', marker='*', s=200, edgecolor='black', zorder=5)
+    plt.scatter(t[-1], v2_nodf_mag[-1], c='red', marker='*', s=200, edgecolor='black', zorder=5)
+    plt.scatter(t[-1], v1_df_mag[-1], c='cyan', marker='*', s=200, edgecolor='black', zorder=5)
+    plt.scatter(t[-1], v2_df_mag[-1], c='magenta', marker='*', s=200, edgecolor='black', zorder=5)
+    
+    plt.xlabel('Time [yr]', fontsize=12)
+    plt.ylabel('Velocity Magnitude [km/s]', fontsize=12)
+    plt.title('Black Hole Velocity vs. Time\nWith and Without Dynamical Friction', fontsize=14)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend(fontsize=10, loc='upper right')
+    
+    text_str = (
+        f"Final Vel BH1 (No DF): {v1_nodf_mag[-1]:.1f} km/s\n"
+        f"Final Vel BH1 (With DF): {v1_df_mag[-1]:.1f} km/s\n"
+        f"Final Vel BH2 (No DF): {v2_nodf_mag[-1]:.1f} km/s\n"
+        f"Final Vel BH2 (With DF): {v2_df_mag[-1]:.1f} km/s"
+    )
+    plt.text(0.02, 0.98, text_str, transform=plt.gca().transAxes,
+             verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+    
+    ic = data_df['initial_conditions']
+    ic_text = (
+        f"Initial Conditions:\n"
+        f"Mass: {ic['mass']}\n"
+        f"Separation: {ic['sep']} pc\n"
+        f"Angle: {ic['angle']}°\n"
+        f"Velocity: {ic['velocity']} km/s"
+    )
+    
+    plt.text(0.02, 0.02, ic_text, transform=plt.gca().transAxes,
+             bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+    
+    plt.tight_layout()
+    plt.show()
+
+def plot_gravitational_acceleration_vs_time(data_df):
+    """Plot gravitational acceleration vs. time for both BHs with DF"""
+    plt.figure(figsize=(12, 6))
+
+    t = data_df['t']
+    a1_mag = np.linalg.norm(data_df['a_grav1'], axis=1)
+    a2_mag = np.linalg.norm(data_df['a_grav2'], axis=1)
+
+    plt.plot(t, a1_mag, 'b-', label='Gravitational Acceleration - BH1', linewidth=1.5)
+    plt.plot(t, a2_mag, 'r-', label='Gravitational Acceleration - BH2', linewidth=1.5)
+
+    plt.xlabel('Time [yr]', fontsize=12)
+    plt.ylabel('Acceleration [km/s²]', fontsize=12)
+    plt.title('Gravitational Acceleration vs Time (With DF)', fontsize=14)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend(fontsize=10)
+    plt.tight_layout()
+    plt.show()
+    
+def plot_position_vs_time(data_df):
+    """Plot position magnitude vs. time for both BHs with DF"""
+    plt.figure(figsize=(12, 6))
+
+    t = data_df['t']
+    r1_mag = np.linalg.norm(data_df['r1'], axis=1)
+    r2_mag = np.linalg.norm(data_df['r2'], axis=1)
+
+    plt.plot(t, r1_mag, 'b-', label='Position Magnitude - BH1', linewidth=1.5)
+    plt.plot(t, r2_mag, 'r-', label='Position Magnitude - BH2', linewidth=1.5)
+
+    plt.xlabel('Time [yr]', fontsize=12)
+    plt.ylabel('Distance from Origin [pc]', fontsize=12)
+    plt.ylim(0, 1000)
+    plt.title('Position vs Time (With DF)', fontsize=14)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend(fontsize=10)
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_df_acceleration_vs_time(data_df):
+    """Plot DF acceleration vs. time for both BHs"""
+    plt.figure(figsize=(12, 6))
+
+    t = data_df['t']
+    df1_mag = np.linalg.norm(data_df['a_df1'], axis=1)
+    df2_mag = np.linalg.norm(data_df['a_df2'], axis=1)
+
+    plt.plot(t, df1_mag, 'c--', label='DF Acceleration - BH1', linewidth=1.5)
+    plt.plot(t, df2_mag, 'm--', label='DF Acceleration - BH2', linewidth=1.5)
+
+    plt.xlabel('Time [yr]', fontsize=12)
+    plt.ylabel('DF Acceleration [km/s²]', fontsize=12)
+    plt.title('Dynamical Friction Acceleration vs Time', fontsize=14)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend(fontsize=10)
+    plt.tight_layout()
+    plt.show()
+
+
+
+def plot_separation_vs_time_bh1(data_df):
+    """Plot BH1's separation from BH2 vs. time with DF and annotations"""
+    plt.figure(figsize=(12, 6))
+
+    t = data_df['t']
+    r1 = data_df['r1']
+    r2 = data_df['r2']
+    sep = np.linalg.norm(r1 - r2, axis=1)
+
+    plt.plot(t, sep, 'b-', label='Separation (BH1 to BH2)', linewidth=1.5)
+
+    plt.xlabel('Time [yr]', fontsize=12)
+    plt.ylabel('Separation [pc]', fontsize=12)
+    plt.title('Separation vs Time (BH1 to BH2, With DF)', fontsize=14)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend(fontsize=10)
+
+
+    sep_init = sep[0]
+    sep_final = sep[-1]
+    sep_text = (
+        f"Initial Separation: {sep_init:.2f} pc\n"
+        f"Final Separation: {sep_final:.2f} pc"
+    )
+    plt.text(0.02, 0.98, sep_text, transform=plt.gca().transAxes,
+             verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+
+    ic = data_df['initial_conditions']
+    ic_text = (
+        f"Initial Conditions:\n"
+        f"Mass: {ic['mass']}\n"
+        f"Separation: {ic['sep']} pc\n"
+        f"Angle: {ic['angle']}°\n"
+        f"Velocity: {ic['velocity']} km/s"
+    )
+    plt.text(0.02, 0.02, ic_text, transform=plt.gca().transAxes,
+             verticalalignment='bottom', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_separation_vs_time_bh2(data_df):
+    """Plot BH2's separation from BH1 vs. time with DF and annotations"""
+    plt.figure(figsize=(12, 6))
+
+    t = data_df['t']
+    r1 = data_df['r1']
+    r2 = data_df['r2']
+    sep = np.linalg.norm(r2 - r1, axis=1)
+
+    plt.plot(t, sep, 'r-', label='Separation (BH2 to BH1)', linewidth=1.5)
+
+    plt.xlabel('Time [yr]', fontsize=12)
+    plt.ylabel('Separation [pc]', fontsize=12)
+    plt.title('Separation vs Time (BH2 to BH1, With DF)', fontsize=14)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend(fontsize=10)
+
+
+    sep_init = sep[0]
+    sep_final = sep[-1]
+    sep_text = (
+        f"Initial Separation: {sep_init:.2f} pc\n"
+        f"Final Separation: {sep_final:.2f} pc"
+    )
+    plt.text(0.02, 0.98, sep_text, transform=plt.gca().transAxes,
+             verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+
+    ic = data_df['initial_conditions']
+    ic_text = (
+        f"Initial Conditions:\n"
+        f"Mass: {ic['mass']}\n"
+        f"Separation: {ic['sep']} pc\n"
+        f"Angle: {ic['angle']}°\n"
+        f"Velocity: {ic['velocity']} km/s"
+    )
+    plt.text(0.02, 0.02, ic_text, transform=plt.gca().transAxes,
+             verticalalignment='bottom', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+    plt.tight_layout()
+    plt.show()

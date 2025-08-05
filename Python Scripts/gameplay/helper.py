@@ -42,6 +42,35 @@ def get_user_option(optionsDict):
         user_input = input("Option: ").strip().upper()
     return user_input
 
+def create_options_dictforC(textFileStr = "plot_options.txt"):
+    '''Parameter : dictionary
+    Returns: creates dictionary for options
+    '''
+    option = {}
+    file = open(textFileStr, 'r')
+    for line in file:
+        compoenents = line.strip().split(':')
+        if len(compoenents) >= 2: #reading the components and then
+            key = compoenents[0].strip() #making sure that the first one is the keys in the dict
+            value = compoenents[1].strip() #then making sure that the second part is the value 
+            option[key] = value #attaching the fact that the key are the uppercase letters and the values are teh descriptions of the options
+    return option
+
+
+
+
+def get_user_optionforC(optionsDict):
+    '''Parameter : dictionary
+    Returns: Asks user for options and then returns the user input
+    '''
+    user_input = "" #to get the menu options from the dictionary
+    user_input = input("Option: ").strip() #loop until it is one the keys
+    while user_input not in optionsDict:
+        user_input = input("Option: ").strip()
+    return user_input
+
+
+
 
 def play_game(data):
     '''Parameter : data

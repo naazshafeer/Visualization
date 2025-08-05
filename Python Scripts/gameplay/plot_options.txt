@@ -1,0 +1,7 @@
+1: Velocity vs. Time (for both bodies)
+2: A_grav vs. Time (for both bodies) with DF
+3: Position vs Time (for both bodies) with DF
+4: Dynamical friction Acceleration vs time (for both bodies)
+5: Separation vs Time (for BH 1) with DF
+6: Separation vs Time (for BH 2) with DF
+7: Back to main menu
