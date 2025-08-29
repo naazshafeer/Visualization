@@ -342,3 +342,50 @@ def plot_separation_vs_time_bh2(data_df):
 
     plt.tight_layout()
     plt.show()
+
+def plot_df_grav_vel_components_vs_time(data_df):
+    """
+    Plot x, y, z components vs. time for:
+      1) DF acceleration
+      2) Gravitational acceleration
+      3) Velocity
+    Each in its own subplot with consistent coloring.
+    """
+
+    t = data_df['t']
+
+    # Convert to arrays for easier slicing
+    a_df = np.array(data_df['a_df1'])     # shape: (N, 3)
+    a_grav = np.array(data_df['a_grav1']) # shape: (N, 3)
+    v = np.array(data_df['v1'])           # shape: (N, 3)
+
+    fig, axes = plt.subplots(3, 1, figsize=(12, 10), sharex=True)
+
+    # --- 1) DF Acceleration ---
+    axes[0].plot(t, a_df[:, 0], 'r-', label='X')
+    axes[0].plot(t, a_df[:, 1], 'g-', label='Y')
+    axes[0].plot(t, a_df[:, 2], 'b-', label='Z')
+    axes[0].set_ylabel('a_DF [pc/yr²]', fontsize=12)
+    axes[0].set_title('Dynamical Friction Acceleration Components', fontsize=14)
+    axes[0].grid(True, linestyle='--', alpha=0.7)
+    axes[0].legend(fontsize=10)
+
+    # --- 2) Gravitational Acceleration ---
+    axes[1].plot(t, a_grav[:, 0], 'r-', label='X')
+    axes[1].plot(t, a_grav[:, 1], 'g-', label='Y')
+    axes[1].plot(t, a_grav[:, 2], 'b-', label='Z')
+    axes[1].set_ylabel('a_grav [pc/yr²]', fontsize=12)
+    axes[1].set_title('Gravitational Acceleration Components', fontsize=14)
+    axes[1].grid(True, linestyle='--', alpha=0.7)
+
+    # --- 3) Velocity ---
+    axes[2].plot(t, v[:, 0], 'r-', label='X')
+    axes[2].plot(t, v[:, 1], 'g-', label='Y')
+    axes[2].plot(t, v[:, 2], 'b-', label='Z')
+    axes[2].set_ylabel('Velocity [pc/yr]', fontsize=12)
+    axes[2].set_xlabel('Time [yr]', fontsize=12)
+    axes[2].set_title('Velocity Components', fontsize=14)
+    axes[2].grid(True, linestyle='--', alpha=0.7)
+
+    plt.tight_layout()
+    plt.show()

@@ -90,6 +90,8 @@ def main():
                 elif choiceforC == '6':
                     gameplay.plot_separation_vs_time_bh2(data_df)
                 elif choiceforC == '7':
+                    gameplay.plot_df_grav_vel_components_vs_time(data_df)
+                elif choiceforC == '8':
                     back_to_main_menu = True
                     print("Going back to main menu")
         elif choice == 'D':

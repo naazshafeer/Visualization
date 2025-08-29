@@ -3,5 +3,6 @@
 3: Position vs Time (for both bodies) with DF
 4: Dynamical friction Acceleration vs time (for both bodies)
 5: Separation vs Time (for BH 1) with DF
-6: Separation vs Time (for BH 2) with DF
-7: Back to main menu
+6: Separation vs Time (for BH 2) with 
+7: A_grav, A_Df, V vs Time stacked
+8: Back to main menu
